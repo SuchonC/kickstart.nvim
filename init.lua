@@ -192,6 +192,10 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+vim.keymap.set('n', '<leader>tu', vim.cmd.UndotreeToggle, { desc = 'Toggle undo tree' })
+vim.keymap.set('n', '<leader>tgg', '<cmd>GV!<CR>', { desc = 'Toggel Git view for current file' })
+vim.keymap.set('n', '<leader>tga', '<cmd>GV<CR>', { desc = 'Toggel Git view for all files' })
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -1001,6 +1005,10 @@ require('lazy').setup({
   -- Or use telescope!
   -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
   -- you can continue same window with `<space>sr` which resumes last telescope search
+  { 'akinsho/toggleterm.nvim', version = '*', config = true },
+  { 'mbbill/undotree' },
+  { 'tpope/vim-fugitive' },
+  { 'junegunn/gv.vim' },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
