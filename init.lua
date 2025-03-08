@@ -193,8 +193,9 @@ vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower win
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 vim.keymap.set('n', '<leader>tu', vim.cmd.UndotreeToggle, { desc = 'Toggle undo tree' })
-vim.keymap.set('n', '<leader>tgg', '<cmd>GV!<CR>', { desc = 'Toggel Git view for current file' })
-vim.keymap.set('n', '<leader>tga', '<cmd>GV<CR>', { desc = 'Toggel Git view for all files' })
+vim.keymap.set('n', '<leader>tgg', '<cmd>GV!<CR>', { desc = 'Toggle Git view for current file' })
+vim.keymap.set('n', '<leader>tga', '<cmd>GV<CR>', { desc = 'Toggle Git view for all files' })
+vim.keymap.set('n', '<leader>j', '<cmd>ToggleTerm<CR>', { desc = 'Toggle terminal' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
