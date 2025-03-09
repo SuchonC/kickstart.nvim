@@ -196,6 +196,7 @@ vim.keymap.set('n', '<leader>tu', vim.cmd.UndotreeToggle, { desc = 'Toggle undo 
 vim.keymap.set('n', '<leader>tgg', '<cmd>GV!<CR>', { desc = 'Toggle Git view for current file' })
 vim.keymap.set('n', '<leader>tga', '<cmd>GV<CR>', { desc = 'Toggle Git view for all files' })
 vim.keymap.set('n', '<leader>j', '<cmd>ToggleTerm<CR>', { desc = 'Toggle terminal' })
+vim.keymap.set('t', 'jk', '<C-\\><C-n>:CFloatTerm<CR>')
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
