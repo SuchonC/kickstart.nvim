@@ -197,6 +197,7 @@ vim.keymap.set('n', '<leader>tu', vim.cmd.UndotreeToggle, { desc = 'Toggle undo 
 vim.keymap.set('n', '<leader>j', '<cmd>ToggleTerm<CR>', { desc = 'Toggle terminal' })
 vim.keymap.set('n', '<leader>tg', '<cmd>LazyGit<CR>', { desc = 'LazyGit' })
 vim.keymap.set('t', 'jk', '<C-\\><C-n>:CFloatTerm<CR>')
+-- vim.keymap.set('n', 's', '<Nop>', { noremap = true })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -924,6 +925,7 @@ require('lazy').setup({
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
+    enabled = false,
     config = function()
       -- Better Around/Inside textobjects
       --
@@ -1028,6 +1030,28 @@ require('lazy').setup({
     dependencies = {
       'nvim-lua/plenary.nvim',
     },
+  },
+  -- {
+  --   'folke/flash.nvim',
+  --   event = 'VeryLazy',
+  --   ---@type Flash.Config
+  --   opts = {},
+  -- -- stylua: ignore
+  -- keys = {
+  --   { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+  --   { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+  --   { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
+  --   { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+  --   { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
+  -- },
+  -- },
+  {
+    'ggandor/leap.nvim',
+    config = function()
+      local leap = require 'leap'
+      leap.add_default_mappings()
+      leap.opts.case_sensitive = false
+    end,
   },
 }, {
   ui = {
