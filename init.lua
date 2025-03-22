@@ -192,10 +192,10 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+-- Foke's config
 vim.keymap.set('n', '<leader>tu', vim.cmd.UndotreeToggle, { desc = 'Toggle undo tree' })
-vim.keymap.set('n', '<leader>tgg', '<cmd>GV!<CR>', { desc = 'Toggle Git view for current file' })
-vim.keymap.set('n', '<leader>tga', '<cmd>GV<CR>', { desc = 'Toggle Git view for all files' })
 vim.keymap.set('n', '<leader>j', '<cmd>ToggleTerm<CR>', { desc = 'Toggle terminal' })
+vim.keymap.set('n', '<leader>tg', '<cmd>LazyGit<CR>', { desc = 'LazyGit' })
 vim.keymap.set('t', 'jk', '<C-\\><C-n>:CFloatTerm<CR>')
 
 -- [[ Basic Autocommands ]]
@@ -407,7 +407,11 @@ require('lazy').setup({
         --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
         --   },
         -- },
-        -- pickers = {}
+        pickers = {
+          colorscheme = {
+            enable_preview = true,
+          },
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -1009,8 +1013,22 @@ require('lazy').setup({
   -- you can continue same window with `<space>sr` which resumes last telescope search
   { 'akinsho/toggleterm.nvim', version = '*', config = true },
   { 'mbbill/undotree' },
-  { 'tpope/vim-fugitive' },
   { 'junegunn/gv.vim' },
+  {
+    'kdheepak/lazygit.nvim',
+    lazy = true,
+    cmd = {
+      'LazyGit',
+      'LazyGitConfig',
+      'LazyGitCurrentFile',
+      'LazyGitFilter',
+      'LazyGitFilterCurrentFile',
+    },
+    -- optional for floating window border decoration
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    },
+  },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
