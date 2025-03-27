@@ -193,11 +193,16 @@ vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower win
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- Foke's config
-vim.keymap.set('n', '<leader>tu', vim.cmd.UndotreeToggle, { desc = 'Toggle undo tree' })
+vim.keymap.set('n', '<leader>tu', function()
+  vim.cmd.UndotreeToggle()
+  vim.cmd.UndotreeFocus()
+end, { desc = 'Toggle undo tree' })
 vim.keymap.set('n', '<leader>j', '<cmd>ToggleTerm<CR>', { desc = 'Toggle terminal' })
 vim.keymap.set('n', '<leader>tg', '<cmd>LazyGit<CR>', { desc = 'LazyGit' })
 vim.keymap.set('t', 'jk', '<C-\\><C-n>:CFloatTerm<CR>')
--- vim.keymap.set('n', 's', '<Nop>', { noremap = true })
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+vim.keymap.set('n', '<leader>e', '<cmd>NvimTreeFindFileToggle<CR>', { desc = 'Toggle Nvim Tree' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -852,7 +857,7 @@ require('lazy').setup({
 
           -- If you prefer more traditional completion keymaps,
           -- you can uncomment the following lines
-          --['<CR>'] = cmp.mapping.confirm { select = true },
+          ['<CR>'] = cmp.mapping.confirm { select = true },
           --['<Tab>'] = cmp.mapping.select_next_item(),
           --['<S-Tab>'] = cmp.mapping.select_prev_item(),
 
@@ -925,7 +930,6 @@ require('lazy').setup({
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
-    enabled = false,
     config = function()
       -- Better Around/Inside textobjects
       --
@@ -940,7 +944,7 @@ require('lazy').setup({
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup()
+      --require('mini.surround').setup()
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
@@ -1031,26 +1035,75 @@ require('lazy').setup({
       'nvim-lua/plenary.nvim',
     },
   },
-  -- {
-  --   'folke/flash.nvim',
-  --   event = 'VeryLazy',
-  --   ---@type Flash.Config
-  --   opts = {},
-  -- -- stylua: ignore
-  -- keys = {
-  --   { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
-  --   { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
-  --   { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
-  --   { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
-  --   { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
-  -- },
-  -- },
+  {
+    'nvim-tree/nvim-tree.lua',
+    version = '*',
+    lazy = false,
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+    },
+    config = function()
+      require('nvim-tree').setup {}
+    end,
+  },
   {
     'ggandor/leap.nvim',
     config = function()
       local leap = require 'leap'
       leap.add_default_mappings()
       leap.opts.case_sensitive = false
+    end,
+  },
+  {
+    'rose-pine/neovim',
+    name = 'rose-pine',
+    config = function()
+      -- vim.cmd 'colorscheme rose-pine'
+    end,
+  },
+  {
+    'EdenEast/nightfox.nvim',
+    config = function()
+      vim.cmd 'colorscheme carbonfox'
+    end,
+  },
+  {
+    'stevearc/overseer.nvim',
+    config = function()
+      -- Setup overseer.nvim
+      require('overseer').setup()
+
+      -- Define a custom task for running pytest on the current file
+      local overseer = require 'overseer'
+
+      overseer.register_template {
+        name = 'run-pytest-current-file',
+        builder = function()
+          -- Get the current file path
+          local file_path = vim.fn.expand '%:p'
+          return {
+            cmd = 'pyenv',
+            args = { 'exec', 'pytest', '-s', file_path },
+            components = {
+              -- Add default components for better task management
+              { 'on_output_quickfix', open = true },
+              'default',
+            },
+          }
+        end,
+        -- Set the condition for when this task should be available
+        condition = {
+          callback = function()
+            -- Only enable this task for Python files
+            return vim.bo.filetype == 'python'
+          end,
+        },
+        -- Optional description
+        desc = 'Run pytest on the current file using pyenv',
+      }
+
+      -- Keybinding to quickly run the task
+      vim.api.nvim_set_keymap('n', '<leader>ttp', ':OverseerRun Run pytest on current file<CR>', { noremap = true, silent = true })
     end,
   },
 }, {
