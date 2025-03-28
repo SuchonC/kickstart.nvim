@@ -199,7 +199,7 @@ vim.keymap.set('n', '<leader>tu', function()
 end, { desc = 'Toggle undo tree' })
 vim.keymap.set('n', '<leader>j', '<cmd>ToggleTerm<CR>', { desc = 'Toggle terminal' })
 vim.keymap.set('n', '<leader>tg', '<cmd>LazyGit<CR>', { desc = 'LazyGit' })
-vim.keymap.set('t', 'jk', '<C-\\><C-n>:CFloatTerm<CR>')
+--vim.keymap.set('t', 'jk', '<C-\\><C-n>:CFloatTerm<CR>')
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 vim.keymap.set('n', '<leader>e', '<cmd>NvimTreeFindFileToggle<CR>', { desc = 'Toggle Nvim Tree' })
