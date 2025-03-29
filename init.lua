@@ -163,6 +163,11 @@ vim.opt.scrolloff = 10
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
+-- Show code errors on current line
+vim.keymap.set('n', '<leader>ce', function()
+  vim.diagnostic.open_float(0, { scope = 'line' })
+end, { desc = 'Show code [E]rror on current line' })
+
 -- jk as Escape
 vim.keymap.set('i', 'jk', '<Esc>')
 
@@ -269,15 +274,46 @@ require('lazy').setup({
   -- See `:help gitsigns` to understand what the configuration keys do
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
-    opts = {
-      signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
-      },
-    },
+    config = function()
+      -- Define highlight groups
+      vim.api.nvim_set_hl(0, 'GitSignsAdd', { fg = '#4fd6be' }) -- Green
+      vim.api.nvim_set_hl(0, 'GitSignsChange', { fg = '#ffc777' }) -- Yellow
+      vim.api.nvim_set_hl(0, 'GitSignsDelete', { fg = '#ff757f' }) -- Red
+
+      require('gitsigns').setup({
+        signs = {
+          add = { text = '│' },
+          change = { text = '│' },
+          delete = { text = '│' },
+          topdelete = { text = '│' },
+          changedelete = { text = '│' },
+          untracked = { text = '│' },
+        },
+        signcolumn = true,
+        numhl = true,
+        linehl = false,
+        word_diff = false,
+        watch_gitdir = {
+          interval = 1000,
+          follow_files = true,
+        },
+        attach_to_untracked = true,
+        current_line_blame = false,
+        current_line_blame_opts = {
+          virt_text = true,
+          virt_text_pos = 'eol',
+          hl_mode = 'replace',
+          delay = 1000,
+        },
+        preview_config = {
+          border = 'rounded',
+          style = 'minimal',
+          relative = 'cursor',
+          row = 0,
+          col = 1,
+        },
+      })
+    end,
   },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
