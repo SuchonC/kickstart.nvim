@@ -202,9 +202,7 @@ vim.keymap.set('n', '<leader>tu', function()
   vim.cmd.UndotreeToggle()
   vim.cmd.UndotreeFocus()
 end, { desc = 'Toggle undo tree' })
-vim.keymap.set('n', '<leader>j', '<cmd>ToggleTerm<CR>', { desc = 'Toggle terminal' })
 vim.keymap.set('n', '<leader>tg', '<cmd>LazyGit<CR>', { desc = 'LazyGit' })
---vim.keymap.set('t', 'jk', '<C-\\><C-n>:CFloatTerm<CR>')
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 vim.keymap.set('n', '<leader>e', '<cmd>NvimTreeFindFileToggle<CR>', { desc = 'Toggle Nvim Tree' })
@@ -1053,9 +1051,6 @@ require('lazy').setup({
   -- Or use telescope!
   -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
   -- you can continue same window with `<space>sr` which resumes last telescope search
-  { 'akinsho/toggleterm.nvim', version = '*', config = true },
-  { 'mbbill/undotree' },
-  { 'junegunn/gv.vim' },
   {
     'kdheepak/lazygit.nvim',
     lazy = true,
@@ -1118,8 +1113,8 @@ require('lazy').setup({
           -- Get the current file path
           local file_path = vim.fn.expand '%:p'
           return {
-            cmd = 'pyenv',
-            args = { 'exec', 'pytest', '-s', file_path },
+            cmd = 'uv',
+            args = { 'run', 'pytest', '-s', file_path },
             components = {
               -- Add default components for better task management
               { 'on_output_quickfix', open = true },
@@ -1135,11 +1130,67 @@ require('lazy').setup({
           end,
         },
         -- Optional description
-        desc = 'Run pytest on the current file using pyenv',
+        desc = 'Run pytest on the current file using uv',
+      }
+
+      -- Add new template for running pytest on current test function
+      overseer.register_template {
+        name = 'run-pytest-current-function',
+        builder = function()
+          -- Get the current file path and line number
+          local file_path = vim.fn.expand '%:p'
+          local line_number = vim.fn.line('.')
+          
+          -- Get the current function name using treesitter
+          local ts_utils = require('nvim-treesitter.ts_utils')
+          local node = ts_utils.get_node_at_cursor()
+          local function_name = ''
+          
+          -- Traverse up the tree to find the function definition
+          while node do
+            if node:type() == 'function_definition' then
+              local start_row = node:start()
+              local end_row = node:end_()
+              if line_number >= start_row and line_number <= end_row then
+                -- Get the function name
+                local name_node = node:child(1)
+                if name_node then
+                  function_name = vim.treesitter.get_node_text(name_node, 0)
+                end
+                break
+              end
+            end
+            node = node:parent()
+          end
+
+          -- If we found a function name, use it in the pytest command
+          local args = { 'run', 'pytest', '-s', file_path }
+          if function_name ~= '' then
+            table.insert(args, '-k')
+            table.insert(args, function_name)
+          end
+
+          return {
+            cmd = 'uv',
+            args = args,
+            components = {
+              { 'on_output_quickfix', open = true },
+              'default',
+            },
+          }
+        end,
+        condition = {
+          callback = function()
+            return vim.bo.filetype == 'python'
+          end,
+        },
+        desc = 'Run pytest on the current test function using uv',
       }
 
       -- Keybinding to quickly run the task
-      vim.api.nvim_set_keymap('n', '<leader>ttp', ':OverseerRun Run pytest on current file<CR>', { noremap = true, silent = true })
+      vim.api.nvim_set_keymap('n', '<leader>ttp', ':OverseerRun run-pytest-current-file<CR>', { noremap = true, silent = true })
+      -- Keybinding to run pytest on current function
+      vim.api.nvim_set_keymap('n', '<leader>ttf', ':OverseerRun run-pytest-current-function<CR>', { noremap = true, silent = true })
     end,
   },
 }, {
