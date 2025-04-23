@@ -279,7 +279,7 @@ require('lazy').setup({
       vim.api.nvim_set_hl(0, 'GitSignsChange', { fg = '#ffc777' }) -- Yellow
       vim.api.nvim_set_hl(0, 'GitSignsDelete', { fg = '#ff757f' }) -- Red
 
-      require('gitsigns').setup({
+      require('gitsigns').setup {
         signs = {
           add = { text = '│' },
           change = { text = '│' },
@@ -311,7 +311,7 @@ require('lazy').setup({
           row = 0,
           col = 1,
         },
-      })
+      }
     end,
   },
 
@@ -1114,8 +1114,8 @@ require('lazy').setup({
           -- Get the current file path
           local file_path = vim.fn.expand '%:p'
           return {
-            cmd = 'uv',
-            args = { 'run', 'pytest', '-s', file_path },
+            cmd = 'pyenv',
+            args = { 'exec', 'pytest', '-s', file_path },
             components = {
               -- Add default components for better task management
               { 'on_output_quickfix', open = true },
@@ -1131,7 +1131,7 @@ require('lazy').setup({
           end,
         },
         -- Optional description
-        desc = 'Run pytest on the current file using uv',
+        desc = 'Run pytest on the current file using pyenv',
       }
 
       -- Add new template for running pytest on current test function
@@ -1140,13 +1140,13 @@ require('lazy').setup({
         builder = function()
           -- Get the current file path and line number
           local file_path = vim.fn.expand '%:p'
-          local line_number = vim.fn.line('.')
-          
+          local line_number = vim.fn.line '.'
+
           -- Get the current function name using treesitter
-          local ts_utils = require('nvim-treesitter.ts_utils')
+          local ts_utils = require 'nvim-treesitter.ts_utils'
           local node = ts_utils.get_node_at_cursor()
           local function_name = ''
-          
+
           -- Traverse up the tree to find the function definition
           while node do
             if node:type() == 'function_definition' then
@@ -1165,14 +1165,14 @@ require('lazy').setup({
           end
 
           -- If we found a function name, use it in the pytest command
-          local args = { 'run', 'pytest', '-s', file_path }
+          local args = { 'exec', 'pytest', '-s', file_path }
           if function_name ~= '' then
             table.insert(args, '-k')
             table.insert(args, function_name)
           end
 
           return {
-            cmd = 'uv',
+            cmd = 'pyenv',
             args = args,
             components = {
               { 'on_output_quickfix', open = true },
@@ -1185,7 +1185,7 @@ require('lazy').setup({
             return vim.bo.filetype == 'python'
           end,
         },
-        desc = 'Run pytest on the current test function using uv',
+        desc = 'Run pytest on the current test function using pyenv',
       }
 
       -- Keybinding to quickly run the task
