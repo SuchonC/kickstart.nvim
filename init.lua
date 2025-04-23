@@ -202,6 +202,7 @@ vim.keymap.set('n', '<leader>tu', function()
   vim.cmd.UndotreeToggle()
   vim.cmd.UndotreeFocus()
 end, { desc = 'Toggle undo tree' })
+vim.keymap.set('n', 'U', '<C-r>', { desc = 'Redo' })
 vim.keymap.set('n', '<leader>tg', '<cmd>LazyGit<CR>', { desc = 'LazyGit' })
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
